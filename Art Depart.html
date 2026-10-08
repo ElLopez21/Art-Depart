@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Art Depart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="stage"></div>
+
+    <section id="title" aria-label="Title screen">
+      <div class="title-inner">
+        <h1 class="wordmark">Art Depart</h1>
+        <p class="tagline">Steal the spotlight, masterpiece by masterpiece.</p>
+        <p class="pitch">
+          Slip past the curator, study each painting's technique, then prove you
+          know it at the door. Three galleries, three techniques, one very
+          determined art thief.
+        </p>
+        <div class="title-actions">
+          <button class="btn primary" id="btn-start">Begin the heist</button>
+          <button class="btn" id="btn-credits">Watch the credits</button>
+        </div>
+        <div class="galleries" id="galleries"></div>
+        <p class="howto">
+          Move with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or the
+          arrow keys. Press <kbd>E</kbd> to study a painting or try a door.
+        </p>
+      </div>
+    </section>
+
+    <div id="hud" class="hidden" aria-live="polite">
+      <p class="room" id="hud-room"></p>
+      <p class="technique" id="hud-tech"></p>
+      <p class="objective" id="hud-obj"></p>
+      <p class="stats" id="hud-stats"></p>
+    </div>
+    <div id="prompt" class="hidden"></div>
+    <div id="toast" class="hidden">
+      <h2 id="toast-h"></h2>
+      <p id="toast-p"></p>
+    </div>
+
+    <div
+      id="m-read"
+      class="scrim hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="read-h"
+    >
+      <div class="placard">
+        <button class="close-x" data-close aria-label="Close">✕</button>
+        <span class="frame"><img id="read-img" alt="" /></span>
+        <h2 id="read-h"></h2>
+        <p class="def" id="read-def"></p>
+        <p class="seen" id="read-seen"></p>
+        <p class="note">
+          Remember what makes it recognizable. The door will ask you to spot it.
+        </p>
+        <div class="row">
+          <button class="btn primary" data-close>Back to the heist</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="m-quiz"
+      class="scrim hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="q-h"
+    >
+      <div class="placard wide">
+        <button class="close-x" data-close aria-label="Close">✕</button>
+        <p class="q-head" id="q-h">Which painting best shows the technique?</p>
+        <p class="q-sub" id="q-sub"></p>
+        <div class="cards" id="q-cards"></div>
+        <p id="q-feedback" aria-live="polite"></p>
+        <div class="row" style="margin-top: 6px">
+          <button class="linkish" id="q-back">
+            Go back and look at the painting again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="m-win"
+      class="scrim hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="win-h"
+    >
+      <div class="placard win">
+        <span class="frame"><img id="win-img" alt="" /></span>
+        <h2 id="win-h">Masterpiece acquired</h2>
+        <dl>
+          <dt>Technique</dt>
+          <dd id="win-tech"></dd>
+          <dt>Time</dt>
+          <dd id="win-time"></dd>
+          <dt>Times caught</dt>
+          <dd id="win-caught"></dd>
+        </dl>
+        <div class="row">
+          <button class="btn" id="win-title">Back to title</button>
+          <button class="btn primary" id="win-next">Next gallery</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="credits" class="hidden" aria-label="Credits">
+      <canvas id="credits-canvas" width="1280" height="820"></canvas>
+      <button class="btn" id="credits-close">Back to title</button>
+      <div class="roll">
+        <div class="roll-inner" id="roll">
+          <h2>Art Depart</h2>
+          <p>
+            A sneak game about stealing masterpieces and learning how they were
+            made.
+          </p>
+          <p><small>Techniques studied</small>Impasto, Sfumato, Pointillism</p>
+          <p><small>Built with</small>three.js and lil-gui</p>
+          <p>
+            <small>About the paintings</small>Every painting in the galleries is
+            an original study painted in code to demonstrate its technique. Go
+            see the real ones: The Starry Night, the Mona Lisa, and A Sunday on
+            La Grande Jatte.
+          </p>
+          <p><small>Built by:</small>Kite Randel & Erik Lopez</p>
+          <p>Thanks for playing.</p>
+        </div>
+      </div>
+    </section>
+
+    <div id="touch" class="hidden">
+      <div class="dpad" aria-label="Movement">
+        <button class="u" data-dir="up" aria-label="Move up">▲</button>
+        <button class="l" data-dir="left" aria-label="Move left">◀</button>
+        <button class="r" data-dir="right" aria-label="Move right">▶</button>
+        <button class="d" data-dir="down" aria-label="Move down">▼</button>
+      </div>
+      <button class="act" id="act">Interact</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19.2/dist/lil-gui.umd.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
