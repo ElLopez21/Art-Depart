@@ -515,30 +515,48 @@ kbd {
   mask-image: linear-gradient(transparent, #000 22%, #000 80%, transparent);
 }
 .roll-inner {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 40vh 1.25rem 0;
+  box-sizing: border-box;
   text-align: center;
   animation: roll 26s linear forwards;
-  padding-top: 40vh;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.9),
+    0 0 14px rgba(0, 0, 0, 0.75);
 }
 .roll-inner h2 {
   font-family: var(--display);
   font-size: clamp(2.2rem, 6vw, 3.6rem);
-  margin: 0 0 0.5em;
+  margin: 0 0 0.4em;
   color: var(--gilt-hi);
 }
 .roll-inner p {
-  font-size: 1.2rem;
-  margin: 0 0 1.2em;
-  line-height: 1.5;
+  font-size: 1.15rem;
+  margin: 0 0 1.8em;
+  line-height: 1.55;
+  text-wrap: balance;
 }
 .roll-inner small {
   display: block;
-  color: #bdb2d9;
-  font-size: 1rem;
+  margin-bottom: 0.35em;
+  color: var(--gilt-hi);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
+.roll-inner .roll-thanks {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--gilt-hi);
+  margin: 2.4em 0 0;
+}
+/* End with the last line resting in the middle of the roll instead of
+   scrolling everything away (the roll is 46% of the viewport tall). */
 @keyframes roll {
   to {
-    transform: translateY(-100%);
+    transform: translateY(calc(-100% + 23vh));
   }
 }
 #credits .btn {
